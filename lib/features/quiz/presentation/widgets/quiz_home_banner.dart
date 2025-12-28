@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/utils/theme/app_colors.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../features/profile/presentation/pages/profile_page.dart';
 
 class QuizHomeBanner extends StatelessWidget {

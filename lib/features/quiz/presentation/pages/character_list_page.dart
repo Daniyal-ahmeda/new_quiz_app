@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:new_quiz_app/features/quiz/presentation/pages/character_details_page.dart';
 import 'package:share_plus/share_plus.dart';
-import '../../../../core/widgets/character_avatar.dart';
-import '../../../../core/widgets/custom_card.dart';
-import '../../domain/entities/character.dart';
 import '../providers/character_provider.dart';
-import '../../../../features/auth/presentation/providers/auth_provider.dart';
+import '../../domain/entities/character.dart';
+import 'character_creation_page.dart';
 import 'character_search_delegate.dart';
-import '../../../profile/presentation/pages/profile_page.dart';
+import '../widgets/character_list/character_grid_card.dart';
 
 class CharacterListPage extends ConsumerWidget {
   const CharacterListPage({super.key});
@@ -22,7 +21,8 @@ class CharacterListPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Characters'),
+        title: const Text('My Characters'),
+        centerTitle: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
@@ -35,44 +35,77 @@ class CharacterListPage extends ConsumerWidget {
               });
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {
-              Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => const ProfilePage()));
-            },
-          ),
         ],
       ),
       body: charactersAsync.when(
-        data: (characters) => ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: characters.length,
-          itemBuilder: (context, index) {
-            final char = characters[index];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: CustomCard(
-                child: ListTile(
-                  leading: CharacterAvatar(imageUrl: char.imageUrl),
-                  title: Text(char.name),
-                  subtitle: Text(char.description),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.share),
-                    onPressed: () => _shareCharacter(char),
+        data: (characters) {
+          if (characters.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.person_off_outlined,
+                    size: 64,
+                    color: Colors.grey[400],
                   ),
-                ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No characters yet',
+                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text('Create one to get started!'),
+                ],
               ),
             );
-          },
-        ),
+          }
+          return GridView.builder(
+            padding: const EdgeInsets.fromLTRB(
+              16,
+              16,
+              16,
+              100,
+            ), // Increased bottom padding
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.7,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+            ),
+            itemCount: characters.length,
+            itemBuilder: (context, index) {
+              final char = characters[index];
+              return CharacterGridCard(
+                character: char,
+                onShare: () => _shareCharacter(char),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => CharacterDetailsPage(character: char),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, stack) => Center(child: Text('Error: $e')),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {}, // TODO: Add Create Dialog
-        child: const Icon(Icons.add),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 70.0), // Lift above navbar
+        child: FloatingActionButton.extended(
+          backgroundColor: Theme.of(context).primaryColor,
+          foregroundColor: Colors.white,
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const CharacterCreationPage()),
+            );
+          },
+          icon: const Icon(Icons.add),
+          label: const Text('New'),
+        ),
       ),
     );
   }

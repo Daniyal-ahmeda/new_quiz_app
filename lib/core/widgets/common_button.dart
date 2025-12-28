@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class AppButton extends StatelessWidget {
+class CommonButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
   final IconData? icon;
   final bool isLoading;
 
-  const AppButton({
+  const CommonButton({
     super.key,
     required this.label,
     this.onPressed,

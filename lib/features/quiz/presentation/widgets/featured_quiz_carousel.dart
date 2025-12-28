@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/widgets/custom_card.dart';
-import '../../data/mock_quizzes.dart';
 import '../../domain/entities/quiz.dart';
+import '../pages/quiz_playing_page.dart';
+import '../providers/quiz_provider.dart';
 
-class FeaturedQuizCarousel extends StatelessWidget {
+class FeaturedQuizCarousel extends ConsumerWidget {
   const FeaturedQuizCarousel({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final quizzesAsync = ref.watch(featuredQuizzesProvider);
+
     return SliverToBoxAdapter(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,13 +28,18 @@ class FeaturedQuizCarousel extends StatelessWidget {
           ),
           SizedBox(
             height: 220,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: premadeQuizzes.length,
-              itemBuilder: (context, index) {
-                return _QuizCard(quiz: premadeQuizzes[index]);
-              },
+            child: quizzesAsync.when(
+              data: (quizzes) => ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: quizzes.length,
+                itemBuilder: (context, index) {
+                  return _QuizCard(quiz: quizzes[index]);
+                },
+              ),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, stack) =>
+                  Center(child: Text('Error loading quizzes: $e')),
             ),
           ),
         ],
@@ -51,9 +60,9 @@ class _QuizCard extends StatelessWidget {
       margin: const EdgeInsets.only(right: 16, bottom: 8),
       child: CustomCard(
         onTap: () {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Starting ${quiz.title}...')));
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => QuizPlayingPage(quiz: quiz)),
+          );
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

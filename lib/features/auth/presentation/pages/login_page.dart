@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/common_button.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/auth_text_field.dart';
 
@@ -56,7 +56,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               isPassword: true,
             ),
             const SizedBox(height: 24),
-            AppButton(
+            CommonButton(
               label: _isLogin ? 'Login' : 'Sign Up',
               onPressed: _submit,
               isLoading: _isLoading,

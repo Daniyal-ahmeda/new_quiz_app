@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../features/auth/presentation/providers/auth_provider.dart';
-import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/common_button.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_stats.dart';
 import '../widgets/profile_settings.dart';
@@ -29,7 +29,7 @@ class ProfilePage extends ConsumerWidget {
                     const SizedBox(height: 24),
                     const ProfileSettings(),
                     const SizedBox(height: 32),
-                    AppButton(
+                    CommonButton(
                       label: 'Sign Out',
                       icon: Icons.logout,
                       onPressed: () {

@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'features/auth/presentation/pages/login_page.dart';
+import 'features/onboarding/presentation/pages/splash_page.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
-import 'features/quiz/presentation/pages/quiz_home_page.dart';
+import 'core/presentation/pages/main_page.dart';
 import 'core/utils/theme/app_theme.dart';
 
 void main() async {
@@ -29,14 +30,13 @@ class MyApp extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
 
     return MaterialApp(
-      title: 'Quiz App',
+      title: 'ProQuiz',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
       home: authState.when(
-        data: (user) => user != null ? const QuizHomePage() : const LoginPage(),
-        loading: () =>
-            const Scaffold(body: Center(child: CircularProgressIndicator())),
+        data: (user) => user != null ? const MainPage() : const LoginPage(),
+        loading: () => const SplashPage(),
         error: (e, _) => Scaffold(body: Center(child: Text('Error: $e'))),
       ),
     );

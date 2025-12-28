@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../features/quiz/presentation/providers/character_provider.dart';
 
-class ProfileStats extends StatelessWidget {
+class ProfileStats extends ConsumerWidget {
   const ProfileStats({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final charactersAsync = ref.watch(characterListProvider);
+
     return Row(
       children: [
         Expanded(
-          child: _buildStatCard('Quizzes', '12', Icons.assignment_turned_in),
+          child: charactersAsync.when(
+            data: (list) =>
+                _buildStatCard('Characters', '${list.length}', Icons.people),
+            loading: () => _buildStatCard('Characters', '...', Icons.people),
+            error: (_, __) => _buildStatCard('Characters', '-', Icons.error),
+          ),
         ),
         const SizedBox(width: 16),
-        Expanded(child: _buildStatCard('Avg. Score', '85%', Icons.analytics)),
+        Expanded(
+          child: _buildStatCard('Level', '1', Icons.star),
+        ), // Static for now
       ],
     );
   }

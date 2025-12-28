@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/utils/theme/app_colors.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/custom_card.dart';
 import '../pages/character_list_page.dart';
 

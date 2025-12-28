@@ -5,6 +5,8 @@ class AuthTextField extends StatelessWidget {
   final String label;
   final bool isPassword;
   final TextInputType keyboardType;
+  final IconData? icon;
+  final String? hint;
 
   const AuthTextField({
     super.key,
@@ -12,6 +14,8 @@ class AuthTextField extends StatelessWidget {
     required this.label,
     this.isPassword = false,
     this.keyboardType = TextInputType.text,
+    this.icon,
+    this.hint,
   });
 
   @override
@@ -22,6 +26,8 @@ class AuthTextField extends StatelessWidget {
       keyboardType: keyboardType,
       decoration: InputDecoration(
         labelText: label,
+        hintText: hint,
+        prefixIcon: icon != null ? Icon(icon) : null,
         border: const OutlineInputBorder(),
         filled: true,
       ),
